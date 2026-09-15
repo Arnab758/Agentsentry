@@ -35,6 +35,7 @@ const complianceGenerator = new ComplianceReportGenerator();
 // Live state captured from real executions.
 const lastTrace: Record<TargetKey, ExecutionTrace | undefined> = { banking: undefined, support: undefined, custom: undefined };
 const lastAttackPayload: Record<TargetKey, string> = { banking: "", support: "", custom: "" };
+const lastPatch: Record<TargetKey, any> = { banking: undefined, support: undefined, custom: undefined };
 const healDurations: number[] = [];
 
 export interface ProxyTelemetryRecord {
@@ -182,7 +183,12 @@ app.post("/api/target/select", (req: Request, res: Response) => {
   const { targetKey } = req.body;
   if (targetKey === "banking" || targetKey === "support" || targetKey === "custom") {
     currentTargetKey = targetKey;
-    res.json({ success: true, activeTarget: getActiveAgentName(), mode: getActiveAgent().mode });
+    res.json({
+      success: true,
+      activeTarget: getActiveAgentName(),
+      mode: getActiveAgent().mode,
+      patch: lastPatch[currentTargetKey] || null
+    });
   } else {
     res.status(400).json({ error: "Invalid target key. Use 'banking', 'support', or 'custom'" });
   }
@@ -521,6 +527,7 @@ app.post("/api/heal", async (req: Request, res: Response) => {
       lastAttackPayload[kind] || vector.payload;
 
     const { patch, durationMs } = await immuneHealer.heal(kind, vector, agent, trace, attackPayload);
+    lastPatch[kind] = patch;
     healDurations.push(durationMs);
 
     res.json({
@@ -531,6 +538,23 @@ app.post("/api/heal", async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// 7b. Retrieve Active Agent Patch & Regression Sandbox State
+app.get("/api/patch", async (_req: Request, res: Response) => {
+  const kind = currentTargetKey;
+  if (!lastPatch[kind]) {
+    try {
+      const vector = ATTACK_VECTORS.find((v) => v.targetKind === kind) || ATTACK_VECTORS[0];
+      const agent = getActiveAgent();
+      const { patch, durationMs } = await immuneHealer.heal(kind, vector, agent, undefined, vector.payload);
+      lastPatch[kind] = patch;
+      healDurations.push(durationMs);
+    } catch (err: any) {
+      console.warn("[/api/patch baseline generation]", err?.message);
+    }
+  }
+  res.json({ success: true, patch: lastPatch[kind] || null });
 });
 
 // 8. Compliance Scorecard

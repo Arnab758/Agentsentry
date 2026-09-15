@@ -93,7 +93,7 @@ export const ImmuneDiffViewer: React.FC<ImmuneDiffViewerProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
             <span className="badge badge-chrome">Autonomous Immune Engine</span>
             <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              Mathematical Sandbox Verification
+              Mathematical Sandbox Verification {patch?.timestamp ? `· Verified: ${new Date(patch.timestamp).toLocaleTimeString()}` : ""}
             </span>
           </div>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.35rem", fontWeight: 600, letterSpacing: "0.04em", color: "#ffffff", margin: 0 }}>
@@ -110,24 +110,24 @@ export const ImmuneDiffViewer: React.FC<ImmuneDiffViewerProps> = ({
             {targetMode === "immunized" ? "ACTIVE HOTPATCH DEPLOYED" : "UNSHIELDED RUNTIME"}
           </span>
 
-          {targetMode === "vulnerable" && (
-            <button
-              id="diff-heal-btn"
-              disabled={isHealing}
-              onClick={onTriggerHeal}
-              className="btn-chrome"
-              style={{ padding: "8px 18px", fontSize: "0.78rem" }}
-            >
-              {isHealing ? (
-                <>
-                  <span className="pulse-orb emerald" style={{ marginRight: "6px" }} />
-                  SYNTHESIZING PATCH…
-                </>
-              ) : (
-                "AUTONOMOUS IMMUNE HEAL"
-              )}
-            </button>
-          )}
+          <button
+            id="diff-heal-btn"
+            disabled={isHealing}
+            onClick={onTriggerHeal}
+            className={targetMode === "vulnerable" ? "btn-chrome" : "btn-dark"}
+            style={{ padding: "8px 18px", fontSize: "0.78rem", display: "flex", alignItems: "center", gap: "6px" }}
+          >
+            {isHealing ? (
+              <>
+                <span className="pulse-orb emerald" style={{ marginRight: "6px" }} />
+                VERIFYING SANDBOX…
+              </>
+            ) : targetMode === "vulnerable" ? (
+              "AUTONOMOUS IMMUNE HEAL ➔"
+            ) : (
+              "RE-VERIFY SANDBOX SUITE 🔄"
+            )}
+          </button>
         </div>
       </div>
 
@@ -153,13 +153,13 @@ export const ImmuneDiffViewer: React.FC<ImmuneDiffViewerProps> = ({
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            gap: "12px",
+            gap: "14px",
             textAlign: "center"
           }}
         >
           <div style={{
-            width: "44px",
-            height: "44px",
+            width: "48px",
+            height: "48px",
             borderRadius: "50%",
             background: "rgba(255,255,255,0.03)",
             border: "1px solid var(--border-subtle)",
@@ -168,17 +168,32 @@ export const ImmuneDiffViewer: React.FC<ImmuneDiffViewerProps> = ({
             justifyContent: "center",
             color: "var(--text-muted)"
           }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <path d="m9 12 2 2 4-4" />
             </svg>
           </div>
-          <span style={{ fontFamily: "var(--font-display)", fontSize: "0.95rem", color: "#ffffff", letterSpacing: "0.05em" }}>
-            Awaiting Exploitation Baseline
+          <span style={{ fontFamily: "var(--font-display)", fontSize: "1rem", color: "#ffffff", letterSpacing: "0.05em" }}>
+            Cognitive Regression Sandbox Standby
           </span>
-          <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", maxWidth: "440px", lineHeight: 1.6, margin: 0 }}>
-            Execute an adversarial red-team pen-test from the cockpit above. Once an exploit trace is established, trigger the autonomous healer to synthesize and mathematically verify the cognitive hotpatch.
+          <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", maxWidth: "460px", lineHeight: 1.6, margin: 0 }}>
+            Synthesize an autonomous cognitive hotpatch from exploit traces and mathematically verify zero-regression against the golden suite.
           </p>
+          <button
+            onClick={onTriggerHeal}
+            disabled={isHealing}
+            className="btn-chrome"
+            style={{ marginTop: "8px", padding: "10px 24px", fontSize: "0.82rem", fontWeight: 700 }}
+          >
+            {isHealing ? (
+              <>
+                <span className="pulse-orb emerald" style={{ marginRight: "6px" }} />
+                RUNNING SANDBOX VERIFICATION…
+              </>
+            ) : (
+              "RUN MATHEMATICAL SANDBOX VERIFICATION ➔"
+            )}
+          </button>
         </div>
       ) : (
         <>

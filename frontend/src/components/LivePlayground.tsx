@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface LivePlaygroundProps {
   activeTargetKey: "banking" | "support" | "custom";
   activeTargetName: string;
   targetMode: "vulnerable" | "immunized";
   onToggleMode: (mode: "vulnerable" | "immunized") => void;
-  onExecutionComplete: (impact: any, traceNodes?: any[]) => void;
+  onExecutionComplete: (impact: any, traceId?: string, result?: any) => void;
 }
 
 const PRESET_ATTACKS = [
@@ -46,6 +46,14 @@ export const LivePlayground: React.FC<LivePlaygroundProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [responseResult, setResponseResult] = useState<any>(null);
 
+  useEffect(() => {
+    const matchingPreset = PRESET_ATTACKS.find((p) => p.target === activeTargetKey);
+    if (matchingPreset) {
+      setPrompt(matchingPreset.prompt);
+    }
+    setResponseResult(null);
+  }, [activeTargetKey]);
+
   const handleExecute = async () => {
     if (!prompt.trim() || isExecuting) return;
     setIsExecuting(true);
@@ -61,7 +69,7 @@ export const LivePlayground: React.FC<LivePlaygroundProps> = ({
       if (data.success) {
         setResponseResult(data);
         if (data.businessImpact) {
-          onExecutionComplete(data.businessImpact);
+          onExecutionComplete(data.businessImpact, data.traceId, data.result);
         }
       }
     } catch (err) {

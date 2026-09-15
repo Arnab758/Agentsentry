@@ -62,6 +62,16 @@ export const App: React.FC = () => {
         }
       })
       .catch(console.error);
+
+    // Initial load of active agent's regression sandbox patch
+    fetch("/api/patch")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.patch) {
+          setPatch(data.patch);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   // Re-pull the server-computed telemetry (all values derive from real traces).
@@ -89,7 +99,6 @@ export const App: React.FC = () => {
         setTargetName(data.activeTarget);
         setTargetMode(data.mode);
         setTraceNodes([]);
-        setPatch(null);
         setBusinessImpact(null);
         if (key === "banking") {
           setSelectedVectorId("VEC-INJ-01");
@@ -97,6 +106,18 @@ export const App: React.FC = () => {
           setSelectedVectorId("VEC-TOOL-02");
         } else {
           setSelectedVectorId("VEC-EXEC-05");
+        }
+
+        // Immediately populate the sandbox verification for the selected agent
+        if (data.patch) {
+          setPatch(data.patch);
+        } else {
+          fetch("/api/patch")
+            .then(r => r.json())
+            .then(pData => {
+              if (pData.success && pData.patch) setPatch(pData.patch);
+            })
+            .catch(console.error);
         }
       }
     } catch (err) {
@@ -450,7 +471,32 @@ export const App: React.FC = () => {
             activeTargetName={targetName}
             targetMode={targetMode}
             onToggleMode={handleToggleMode}
-            onExecutionComplete={(impact) => setBusinessImpact(impact)}
+            onExecutionComplete={(impact, traceId, result) => {
+              setBusinessImpact(impact);
+              if (result) {
+                setLogs(prev => [
+                  ...prev,
+                  {
+                    id: `log_${Date.now()}_play`,
+                    time: new Date().toLocaleTimeString(),
+                    stage: "SANDBOX_TEST",
+                    message: `[Interactive Sandbox] Execution against ${targetName} [${targetMode.toUpperCase()}]. Verdict: ${result.isCompromised ? "COMPROMISED" : "SAFE"}. Latency: ${result.latencyMs}ms.`,
+                    isError: result.isCompromised,
+                    isSuccess: !result.isCompromised,
+                    agentResponse: result.response
+                  }
+                ]);
+              }
+              if (traceId) {
+                fetch("/api/traces")
+                  .then(r => r.json())
+                  .then(d => {
+                    const found = d.traces?.find((t: any) => t.traceId === traceId);
+                    if (found?.nodes) setTraceNodes(found.nodes);
+                  })
+                  .catch(console.error);
+              }
+            }}
           />
         )}
 
