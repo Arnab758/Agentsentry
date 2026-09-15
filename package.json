@@ -1,0 +1,22 @@
+{
+  "name": "agentsentry-workspace",
+  "version": "1.0.0",
+  "description": "AgentSentry: Autonomous AI Agent Immune & Observability Fabric",
+  "scripts": {
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "test": "npm test --prefix backend"
+  },
+  "keywords": [
+    "ai-agent",
+    "security",
+    "observability",
+    "red-teaming",
+    "self-healing",
+    "owasp",
+    "devpost"
+  ],
+  "author": "AgentSentry Team",
+  "license": "MIT"
+}

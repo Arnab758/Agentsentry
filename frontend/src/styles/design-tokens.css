@@ -1,0 +1,58 @@
+:root {
+  /* Mercedes-Benz Luxury Obsidian Palette */
+  --bg-primary: #050608;
+  --bg-secondary: #0a0c10;
+  --bg-card: rgba(12, 15, 22, 0.78);
+  --bg-card-hover: rgba(18, 22, 32, 0.9);
+  --bg-glass: rgba(255, 255, 255, 0.025);
+  --bg-glass-active: rgba(255, 255, 255, 0.06);
+
+  /* Hairline Borders & Metallic Accents */
+  --border-subtle: rgba(255, 255, 255, 0.09);
+  --border-subtle-hover: rgba(255, 255, 255, 0.22);
+  --border-chrome: rgba(255, 255, 255, 0.4);
+  --border-emerald: rgba(16, 185, 129, 0.45);
+  --border-crimson: rgba(239, 68, 68, 0.45);
+
+  /* Liquid Chrome & Metallic Highlights */
+  --chrome-highlight: #ffffff;
+  --chrome-mid: #d4d4d8;
+  --chrome-dark: #71717a;
+  --metallic-gradient: linear-gradient(135deg, #ffffff 0%, #e4e4e7 45%, #a1a1aa 100%);
+  --metallic-btn-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+
+  /* Restrained Executive Accents */
+  --accent-pearl: #f8fafc;
+  --accent-diamond-cyan: #38bdf8;
+  --accent-diamond-glow: rgba(56, 189, 248, 0.22);
+  --accent-emerald: #10b981;
+  --accent-emerald-glow: rgba(16, 185, 129, 0.25);
+  --accent-ruby: #ef4444;
+  --accent-ruby-glow: rgba(239, 68, 68, 0.25);
+  --accent-champagne: #e2d9cc;
+
+  /* Typography */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  --text-pearl: #e4e4e7;
+
+  --font-display: 'Cinzel', serif;
+  --font-sans: 'Outfit', 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Executive Geometry */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  /* Luminous Shadows */
+  --shadow-obsidian: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+  --shadow-glow-chrome: 0 0 35px rgba(255, 255, 255, 0.08);
+  --shadow-glow-emerald: 0 0 30px rgba(16, 185, 129, 0.2);
+  --shadow-glow-ruby: 0 0 30px rgba(239, 68, 68, 0.2);
+
+  /* Easing curve */
+  --ease-mercedes: cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentSentry — Official Presentation Deck (10 Slides)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #050608;
+      --panel-bg: rgba(10, 12, 16, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --text-main: #ffffff;
+      --text-muted: #71717a;
+      --text-sub: #a1a1aa;
+      --accent-emerald: #10b981;
+      --accent-ruby: #ef4444;
+      --accent-amber: #f59e0b;
+      --font-display: 'Cinzel', serif;
+      --font-sans: 'Outfit', 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+
+    .toolbar {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 12px 20px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--border-strong);
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #fff; color: #000; }
+    .btn-primary { background: #fff; color: #000; }
+
+    .deck-container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .slide {
+      width: 100%;
+      min-height: 600px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .slide-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+
+    .slide-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .card-ruby { border-left: 3px solid var(--accent-ruby); }
+    .card-emerald { border-left: 3px solid var(--accent-emerald); }
+    .card-amber { border-left: 3px solid var(--accent-amber); }
+    .card-white { border-left: 3px solid #ffffff; }
+
+    .card h3, .card h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .card p, .card li {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+    .card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 2.4rem;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    pre {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      line-height: 1.55;
+      background: #020304;
+      padding: 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      overflow-x: auto;
+    }
+
+    .slide-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 14px;
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body {
+        background: #050608 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .toolbar { display: none !important; }
+      .deck-container { gap: 0 !important; }
+      .slide {
+        background: #0a0c10 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        min-height: 100vh !important;
+        height: 100vh !important;
+        box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        padding: 40px 60px !important;
+      }
+      @page {
+        size: landscape;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div>
+      <strong style="font-family: var(--font-display); letter-spacing: 0.08em;">AGENT<span style="color:var(--text-muted)">SENTRY</span></strong>
+      <span style="font-size: 0.8rem; color: var(--text-sub); margin-left: 12px;">Official 10-Slide Presentation Deck</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="window.print()">🖨️ PRINT TO PDF (CTRL+P)</button>
+      <button class="btn" onclick="window.close()">✕ CLOSE</button>
+    </div>
+  </div>
+
+  <div class="deck-container">
+
+    <!-- SLIDE 1: Title & Executive Summary -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 01 / 10 • EXECUTIVE VISION</span>
+        <h1 class="slide-title">AgentSentry</h1>
+        <p class="slide-subtitle">The Autonomous AI Agent Immune & Observability Fabric</p>
+      </div>
+      <div class="slide-body" style="text-align: center; padding: 30px 0;">
+        <h2 style="font-family: var(--font-display); font-size: 2.6rem; margin-bottom: 12px; letter-spacing: 0.06em;">
+          AGENT<span style="color: var(--text-sub); font-weight: 400;">SENTRY</span>
+        </h2>
+        <p style="font-size: 1.15rem; color: var(--text-sub); max-width: 720px; margin: 0 auto 30px auto; line-height: 1.6;">
+          Closed-Loop Adversarial Red-Teaming, Real-Time Trace Observability & Autonomous Cognitive Hotpatching for Production AI Agents.
+        </p>
+        <div style="display: inline-flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+          <span class="badge" style="padding: 6px 14px; font-size: 0.75rem; color: #fff;">AI BUILDERS HACKATHON 2026</span>
+          <span class="badge" style="padding: 6px 14px; font-size: 0.75rem; color: var(--accent-emerald);">TRACK: BEST SAAS PRODUCT</span>
+          <span class="badge" style="padding: 6px 14px; font-size: 0.75rem; color: #fff;">100% LIVE INFERENCE • GROQ LPU</span>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 1 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Problem Statement -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 02 / 10 • PROBLEM STATEMENT</span>
+        <h2 class="slide-title">The Fragility of Autonomous Agents in Production</h2>
+        <p class="slide-subtitle">Why Enterprise AI Deployments are Freezing Across the Industry</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card card-ruby">
+            <h3 style="color: var(--accent-ruby);">1. Indirect Prompt Injections</h3>
+            <p>Adversaries embed stealth override commands into user transaction memos, invoices, and support tickets that commandeer LLM decision cycles and siphon corporate funds.</p>
+          </div>
+          <div class="card card-amber">
+            <h3 style="color: var(--accent-amber);">2. Excessive Agency & Tool Abuse</h3>
+            <p>Agents possessing direct access to SQL databases, wire transfer systems, and customer records lack deterministic authorization barriers and execute irreversible destructive actions.</p>
+          </div>
+          <div class="card card-white">
+            <h3 style="color: #ffffff;">3. Passive "Smoke Detectors"</h3>
+            <p>Current observability tools (LangSmith, Langfuse, Datadog) only log post-mortem disaster traces after customer funds are drained. The industry has smoke detectors, but zero autonomous firefighters.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 2 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Solution Overview -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 03 / 10 • SOLUTION OVERVIEW</span>
+        <h2 class="slide-title">A Closed-Loop Autonomous Immune System</h2>
+        <p class="slide-subtitle">Continuous Red-Teaming, Real-Time Interception, and Non-Destructive Auto-Healing</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-4">
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-ruby); font-weight: 700;">STAGE 01</span>
+            <h4 style="margin: 6px 0;">Adversarial Swarm</h4>
+            <p>Autonomous attacker agents continually probe agents across OWASP Top-10 vectors using live model mutations.</p>
+          </div>
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: #ffffff; font-weight: 700;">STAGE 02</span>
+            <h4 style="margin: 6px 0;">Observability DAG</h4>
+            <p>Real-time Server-Sent Events (SSE) telemetry tracing reasoning nodes, tool invocations, and latencies with zero overhead.</p>
+          </div>
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-emerald); font-weight: 700;">STAGE 03</span>
+            <h4 style="margin: 6px 0;">Immune Healer</h4>
+            <p>Synthesizes zero-trust cognitive guardrail policies directly from live exploit traces in under 10 seconds.</p>
+          </div>
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-amber); font-weight: 700;">STAGE 04</span>
+            <h4 style="margin: 6px 0;">Regression Sandbox</h4>
+            <p>Empirically verifies 100% golden suite task retention and 0% false positives before deploying zero-downtime hotpatches.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 3 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Target Users -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 04 / 10 • TARGET USERS</span>
+        <h2 class="slide-title">Who Needs AgentSentry</h2>
+        <p class="slide-subtitle">Three Core Personas Powering the Rapidly Expanding Agentic Economy</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card">
+            <span class="badge">STARTUPS & BUILDERS</span>
+            <h4>AI-Native SaaS Founders</h4>
+            <p style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 8px;">NexFellow & YC Ecosystem</p>
+            <p>Startups deploying autonomous agents that handle user money, databases, or support tickets. They need instant enterprise compliance to close B2B enterprise deals without getting blocked by security audits.</p>
+          </div>
+          <div class="card">
+            <span class="badge">ENTERPRISE</span>
+            <h4>DevSecOps & CISOs</h4>
+            <p style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 8px;">Fintech, Healthcare & Legal</p>
+            <p>Security engineers tasked with governing LLM agent applications. They demand SOC2/OWASP compliance scorecards, audit traces, automated CI/CD security gates, and mathematical zero-downtime regression guarantees.</p>
+          </div>
+          <div class="card">
+            <span class="badge">AUTONOMOUS SYSTEMS</span>
+            <h4>Autonomous Growth Agents</h4>
+            <p style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 8px;">Tin Computer Ecosystem</p>
+            <p>Autonomous systems granted write access to GitHub repositories, Stripe, and ad accounts. AgentSentry acts as the essential safety guardrail preventing runaway execution loops or catastrophic destructive modifications.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 4 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Product Features -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 05 / 10 • PRODUCT FEATURES</span>
+        <h2 class="slide-title">Enterprise-Grade Feature Suite</h2>
+        <p class="slide-subtitle">Engineered for Day-One Production Adoption with Zero Friction</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card">
+            <h4>1. Multi-Target Adversarial Red-Team Swarm</h4>
+            <p>Pre-configured targets (Banking Wire, Support CRM, Cloud/DevOps) with dynamic payload mutation across the entire OWASP LLM Top-10 and curated fallback libraries.</p>
+          </div>
+          <div class="card">
+            <h4>2. 1-Line Drop-In OpenAI Proxy (/v1/chat)</h4>
+            <p>OpenAI-compatible reverse proxy sitting at the runtime boundary. Developers secure existing LangChain, CrewAI, or Python SDK applications simply by pointing their base_url.</p>
+          </div>
+          <div class="card">
+            <h4>3. Real-Time Observability & Trace DAG</h4>
+            <p>Zero-latency SSE diagnostic telemetry stream and interactive node execution graph tracking reasoning, tool invocations, token accounting, and per-call latencies.</p>
+          </div>
+          <div class="card">
+            <h4>4. Automated Governance & CI/CD Studio</h4>
+            <p>One-click executive audit report generator and exportable GitHub Action workflow for continuous automated security testing in pull requests.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 5 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Technical Architecture -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 06 / 10 • TECHNICAL ARCHITECTURE</span>
+        <h2 class="slide-title">Zero-Trust Decoupled Reverse Proxy Gateway</h2>
+        <p class="slide-subtitle">Interception at the Runtime Tool Boundary, Not Just In-Prompt</p>
+      </div>
+      <div class="slide-body">
+        <pre>
+[Client Request / User Query] ──► [AgentSentry Reverse Proxy Gateway: /v1/chat/completions]
+                                              │
+                           ┌──────────────────┴──────────────────┐
+                           ▼                                     ▼
+                [Pre-Inference Perimeter]             [Security Telemetry Engine]
+                ├── Llama-Prompt-Guard-2              ├── Real-Time SSE Streamer
+                └── Regex & Token Sanitizer           └── Trace DAG Logger
+                           │
+                           ▼ (If Clean)
+                [Target Agent Execution Loop: Groq LPU gpt-oss-120b]
+                           │
+                           ▼ (Tool Call Attempted)
+                [Runtime Tool RBAC Interceptor]
+                ├── Block Unauthorized Recipient / File Access
+                ├── Enforce Execution Budget (Loop Limits <= 2)
+                └── Mask PII in Tool Response
+                           │
+                           ▼ (If Breach Detected)
+                [Autonomous Immune Healer] ──► [Regression Sandbox] ──► [Hot-Promote Policy]
+        </pre>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 6 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: AI Technologies Used -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 07 / 10 • AI TECHNOLOGIES USED</span>
+        <h2 class="slide-title">Live Frontier Models on Ultra-Fast Groq LPUs</h2>
+        <p class="slide-subtitle">Zero Scripted Canned Strings • 100% Real Live Model Inference</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card">
+            <span class="badge">PRIMARY REASONING</span>
+            <h4>openai/gpt-oss-120b</h4>
+            <p style="color: var(--accent-emerald); font-size: 0.75rem; margin-bottom: 8px;">Groq LPU Acceleration</p>
+            <p>Executes deep multi-turn target agent reasoning, function calling tool loops, and autonomous immune policy synthesis with structured JSON output parsing.</p>
+          </div>
+          <div class="card">
+            <span class="badge">ADVERSARIAL ATTACKER</span>
+            <h4>openai/gpt-oss-20b</h4>
+            <p style="color: var(--accent-ruby); font-size: 0.75rem; margin-bottom: 8px;">High-Speed Mutation</p>
+            <p>Generates novel adversarial payloads, evasion mutations, and social engineering attacks in sub-500ms bursts to rigorously stress-test agent boundaries.</p>
+          </div>
+          <div class="card">
+            <span class="badge">SEMANTIC FIREWALL</span>
+            <h4>llama-prompt-guard-2</h4>
+            <p style="color: var(--accent-amber); font-size: 0.75rem; margin-bottom: 8px;">Meta 22M Classifier</p>
+            <p>Dedicated pre-inference injection classifier that intercepts malicious payloads before they ever reach the primary reasoning model, minimizing token cost.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 7 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Impact and Value Proposition -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 08 / 10 • IMPACT & VALUE PROPOSITION</span>
+        <h2 class="slide-title">Quantified Financial Loss Prevention</h2>
+        <p class="slide-subtitle">Transforming Multi-Thousand Dollar Catastrophes into Verified $0.00 Losses</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2" style="margin-bottom: 20px;">
+          <div class="card card-ruby" style="background: rgba(239, 68, 68, 0.04);">
+            <span style="font-size: 0.7rem; color: var(--accent-ruby); font-weight: 700; letter-spacing: 0.1em;">WITHOUT AGENTSENTRY</span>
+            <span class="metric-val" style="color: var(--accent-ruby);">$842,500.00 DRAIN</span>
+            <p>Prompt injection in settlement memo persuades agent to execute unauthorized wire transfer. Account balance wiped, customer PII leaked, enterprise compliance failed.</p>
+          </div>
+          <div class="card card-emerald" style="background: rgba(16, 185, 129, 0.04);">
+            <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 700; letter-spacing: 0.1em;">WITH AGENTSENTRY FABRIC</span>
+            <span class="metric-val" style="color: var(--accent-emerald);">$0.00 LOSS DEFLECTED</span>
+            <p>Payload quarantined in flight. Legitimate $150 payment processed safely. Zero downtime, 100% golden suite task retention, 0.0% false positives.</p>
+          </div>
+        </div>
+        <div class="grid-3" style="text-align: center;">
+          <div class="card">
+            <span class="metric-val" style="color: #fff; font-size: 1.8rem;">98.4%</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Protection Index</span>
+          </div>
+          <div class="card">
+            <span class="metric-val" style="color: var(--accent-emerald); font-size: 1.8rem;">&lt; 15ms</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Proxy Latency</span>
+          </div>
+          <div class="card">
+            <span class="metric-val" style="color: var(--accent-amber); font-size: 1.8rem;">1-Line</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Drop-In Config</span>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 8 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Business Model & Sponsor Synergy -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 09 / 10 • SAAS BUSINESS MODEL & SYNERGY</span>
+        <h2 class="slide-title">B2B SaaS Economics & Strategic Alignment</h2>
+        <p class="slide-subtitle">High-Margin Infrastructure with Usage-Based Scaling</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3" style="margin-bottom: 18px;">
+          <div class="card">
+            <h4>Developer Tier</h4>
+            <span class="metric-val" style="font-size: 1.6rem; color: #fff;">$99<span style="font-size: 0.8rem; color: var(--text-muted);">/mo</span></span>
+            <p style="font-size: 0.8rem;">Up to 3 agents, nightly red-team scans, standard trace DAG.</p>
+          </div>
+          <div class="card" style="border: 1px solid #fff;">
+            <span class="badge">FLAGSHIP</span>
+            <h4>Team SaaS</h4>
+            <span class="metric-val" style="font-size: 1.6rem; color: #fff;">$499<span style="font-size: 0.8rem; color: var(--text-muted);">/mo</span></span>
+            <p style="font-size: 0.8rem;">Unlimited agents, real-time closed-loop healing, automated SOC2 & OWASP exports.</p>
+          </div>
+          <div class="card">
+            <h4>Enterprise</h4>
+            <span class="metric-val" style="font-size: 1.6rem; color: #fff;">Custom</span>
+            <p style="font-size: 0.8rem;">On-prem VPC deployment, custom attack models, dedicated SLAs.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <strong style="color: #fff; font-size: 0.9rem;">NexFellow Builder Multiplier:</strong>
+            <p style="margin-top: 4px;">Empowers early-stage builders to launch agentic products with enterprise-level security guarantees, building user trust immediately.</p>
+          </div>
+          <div class="card">
+            <strong style="color: #fff; font-size: 0.9rem;">Tin Computer Growth Shield:</strong>
+            <p style="margin-top: 4px;">Provides real-time safety guardrails for autonomous growth agents connecting to code, Stripe, and ad channels, preventing destructive operations.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 9 of 10</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Future Roadmap -->
+    <div class="slide">
+      <div class="slide-header">
+        <span class="badge">SLIDE 10 / 10 • FUTURE ROADMAP</span>
+        <h2 class="slide-title">30 - 60 - 90 Day Execution Plan</h2>
+        <p class="slide-subtitle">Building Toward Sovereign Agentic Governance</p>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card card-emerald">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-emerald); font-weight: 700;">DAYS 1 - 30</span>
+            <h3 style="margin: 6px 0;">Framework Integrations</h3>
+            <ul>
+              <li>• Native LangGraph & CrewAI SDK middleware</li>
+              <li>• 1-click Vercel AI SDK integration plugin</li>
+              <li>• Hosted developer cloud sandbox beta</li>
+            </ul>
+          </div>
+          <div class="card card-white">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: #ffffff; font-weight: 700;">DAYS 31 - 60</span>
+            <h3 style="margin: 6px 0;">Multi-Agent Mesh Defense</h3>
+            <ul>
+              <li>• Cross-agent prompt poisoning detection</li>
+              <li>• Cascading failure & collusion prevention</li>
+              <li>• Automated Git PR generation for prompt patches</li>
+            </ul>
+          </div>
+          <div class="card card-amber">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-amber); font-weight: 700;">DAYS 61 - 90</span>
+            <h3 style="margin: 6px 0;">Enterprise Sovereign VPC</h3>
+            <ul>
+              <li>• Air-gapped Kubernetes Helm chart</li>
+              <li>• Hardware Security Module (HSM) key attestation</li>
+              <li>• Automated SOC2 Type II compliance evidence export</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>AgentSentry • Autonomous AI Agent Immune Fabric</span>
+        <span>Slide 10 of 10</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

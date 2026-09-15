@@ -1,0 +1,265 @@
+@import "./design-tokens.css";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(circle at 10% 40%, rgba(56, 189, 248, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Editorial Typography */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.tracking-luxury {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.tracking-wide {
+  letter-spacing: 0.08em;
+}
+
+.text-gradient-chrome {
+  background: var(--metallic-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism Cards */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-obsidian);
+  transition: border-color 0.3s var(--ease-mercedes), box-shadow 0.3s var(--ease-mercedes);
+}
+
+.glass-panel:hover {
+  border-color: var(--border-subtle-hover);
+}
+
+.glass-panel.ruby-border {
+  border-color: var(--border-crimson);
+  box-shadow: var(--shadow-glow-ruby);
+}
+
+.glass-panel.emerald-border {
+  border-color: var(--border-emerald);
+  box-shadow: var(--shadow-glow-emerald);
+}
+
+/* Executive Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-mercedes);
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Liquid Chrome Primary Button */
+.btn-chrome {
+  background: var(--metallic-gradient);
+  color: #050608;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+}
+.btn-chrome:hover {
+  background: #ffffff;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Brushed Platinum Ghost Button */
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-pearl);
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-subtle-hover);
+  color: #ffffff;
+}
+
+/* Pearl Emerald Defense Button */
+.btn-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid var(--border-emerald);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+}
+.btn-emerald:hover {
+  background: rgba(16, 185, 129, 0.22);
+  box-shadow: 0 0 24px var(--accent-emerald-glow);
+  transform: translateY(-1px);
+}
+
+/* Ruby Danger Button */
+.btn-ruby {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid var(--border-crimson);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.2);
+}
+.btn-ruby:hover {
+  background: rgba(239, 68, 68, 0.22);
+  box-shadow: 0 0 24px var(--accent-ruby-glow);
+  transform: translateY(-1px);
+}
+
+/* Minimalist Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+}
+
+.badge-chrome {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.badge-ruby {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+/* Pulsing Status Orb */
+.pulse-orb {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.pulse-orb.emerald {
+  background-color: var(--accent-emerald);
+  box-shadow: 0 0 10px var(--accent-emerald);
+  animation: orbGlowEmerald 2s infinite var(--ease-mercedes);
+}
+
+.pulse-orb.ruby {
+  background-color: var(--accent-ruby);
+  box-shadow: 0 0 10px var(--accent-ruby);
+  animation: orbGlowRuby 2s infinite var(--ease-mercedes);
+}
+
+@keyframes orbGlowEmerald {
+  0% { opacity: 0.7; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.25); box-shadow: 0 0 14px var(--accent-emerald); }
+  100% { opacity: 0.7; transform: scale(0.95); }
+}
+
+@keyframes orbGlowRuby {
+  0% { opacity: 0.7; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.25); box-shadow: 0 0 14px var(--accent-ruby); }
+  100% { opacity: 0.7; transform: scale(0.95); }
+}
+
+/* Minimalist Executive Tab Bar */
+.tab-nav-luxury {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(10, 12, 16, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.tab-btn-luxury {
+  padding: 8px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-mercedes);
+}
+
+.tab-btn-luxury:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn-luxury.active {
+  color: #050608;
+  background: var(--metallic-gradient);
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.18);
+}
