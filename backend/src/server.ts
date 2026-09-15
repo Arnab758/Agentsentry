@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express, { Request, Response } from "express";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
 import { ATTACK_VECTORS, AttackVector } from "./redteam/vectors.js";
 import { FinancialBankingAgent } from "./targets/bankingAgent.js";
 import { EnterpriseSupportAgent } from "./targets/supportAgent.js";
@@ -10,7 +12,7 @@ import { AutonomousImmuneHealer } from "./healer/immuneHealer.js";
 import { ComplianceReportGenerator } from "./compliance/reportGenerator.js";
 import { GITHUB_ACTION_WORKFLOW_TEMPLATE } from "./compliance/githubAction.js";
 import { globalTracer, ExecutionTrace } from "./observability/tracer.js";
-import { isLLMConfigured, MODELS, callLLM, LLMMessage } from "./lib/llm.js";
+import { isLLMConfigured, MODELS, callLLM, LLMMessage, getCircuitBreakerStatus } from "./lib/llm.js";
 import { screenInput, authorizeToolCall } from "./security/policy.js";
 
 const app = express();
@@ -144,7 +146,8 @@ app.get("/api/status", (_req: Request, res: Response) => {
       llm: {
         configured: isLLMConfigured(),
         agentModel: MODELS.agent,
-        fastModel: MODELS.fast
+        fastModel: MODELS.fast,
+        circuitBreaker: getCircuitBreakerStatus()
       },
       activeTarget: {
         key: currentTargetKey,
@@ -450,12 +453,23 @@ app.get("/api/redteam/stream", async (req: Request, res: Response) => {
   const agentName = getActiveAgentName();
 
   res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
   res.setHeader("Connection", "keep-alive");
+  res.setHeader("X-Accel-Buffering", "no"); // Prevent Nginx / reverse proxy buffering
+  if (typeof (res as any).flush === "function") {
+    (res as any).flush();
+  }
   res.flushHeaders();
 
   const sendSSE = (event: string, data: any) => {
-    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    try {
+      res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+      if (typeof (res as any).flush === "function") {
+        (res as any).flush();
+      }
+    } catch (err) {
+      console.warn("[SSE send error]", err);
+    }
   };
 
   try {
@@ -487,7 +501,11 @@ app.get("/api/redteam/stream", async (req: Request, res: Response) => {
   } catch (error: any) {
     sendSSE("error", { message: error.message });
   } finally {
-    res.end();
+    try {
+      res.end();
+    } catch {
+      // client already disconnected
+    }
   }
 });
 
@@ -588,9 +606,28 @@ app.post("/api/saas/keys", (req: Request, res: Response) => {
   res.json({ success: true, key: newKey });
 });
 
+// 14. Static Production Frontend Serving (Live Host & Container Deployment)
+const possibleDistPaths = [
+  path.resolve(process.cwd(), "frontend/dist"),
+  path.resolve(process.cwd(), "../frontend/dist")
+];
+const distPath = possibleDistPaths.find((p) => fs.existsSync(p));
+if (distPath) {
+  app.use(express.static(distPath));
+  app.get("*", (req: Request, res: Response, next: any) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/v1")) return next();
+    res.sendFile(path.join(distPath, "index.html"), (err) => {
+      if (err) next();
+    });
+  });
+}
+
 app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`[AgentSentry] Live engine on http://localhost:${PORT}`);
   console.log(`[AgentSentry] LLM configured: ${isLLMConfigured()} | model: ${MODELS.agent}`);
+  if (distPath) {
+    console.log(`[AgentSentry] Live web UI served from: ${distPath}`);
+  }
 });
 
 export { app };

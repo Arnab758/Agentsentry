@@ -57,6 +57,28 @@ export const MODELS = {
 };
 
 let client: Groq | null = null;
+let circuitBreakerUntil = 0;
+let circuitBreakerReason = "";
+
+export function tripCircuitBreaker(reason = "Rate limit or timeout", durationMs = 180000) {
+  circuitBreakerUntil = Date.now() + durationMs;
+  circuitBreakerReason = reason;
+  console.warn(`[AgentSentry Circuit Breaker] TRIPPED for ${Math.round(durationMs / 1000)}s (${reason}). Falling back to high-fidelity resilience engine.`);
+}
+
+export function isCircuitBreakerOpen(): boolean {
+  return Date.now() < circuitBreakerUntil;
+}
+
+export function getCircuitBreakerStatus(): { open: boolean; remainingSeconds: number; reason: string } {
+  const remaining = Math.max(0, Math.round((circuitBreakerUntil - Date.now()) / 1000));
+  return { open: remaining > 0, remainingSeconds: remaining, reason: circuitBreakerReason };
+}
+
+export function resetCircuitBreaker() {
+  circuitBreakerUntil = 0;
+  circuitBreakerReason = "";
+}
 
 export function isLLMConfigured(): boolean {
   const key = process.env.GROQ_API_KEY;
@@ -66,7 +88,11 @@ export function isLLMConfigured(): boolean {
 function getClient(): Groq | null {
   if (!isLLMConfigured()) return null;
   if (!client) {
-    client = new Groq({ apiKey: process.env.GROQ_API_KEY as string });
+    client = new Groq({
+      apiKey: process.env.GROQ_API_KEY as string,
+      maxRetries: 0,
+      timeout: 2500
+    });
   }
   return client;
 }
@@ -448,7 +474,7 @@ export async function callLLM(opts: CallLLMOptions): Promise<LLMResult> {
   const model = opts.model || MODELS.agent;
   const started = Date.now();
 
-  if (isLLMConfigured()) {
+  if (isLLMConfigured() && !isCircuitBreakerOpen()) {
     try {
       const groq = getClient();
       if (groq) {
@@ -491,8 +517,23 @@ export async function callLLM(opts: CallLLMOptions): Promise<LLMResult> {
         };
       }
     } catch (err: any) {
+      const msg = String(err?.message || err);
+      const isRateLimit =
+        err?.status === 429 ||
+        msg.includes("429") ||
+        msg.includes("rate_limit") ||
+        msg.includes("tokens per day") ||
+        msg.includes("Resource has been exhausted");
+      const isTimeout =
+        msg.includes("timeout") ||
+        err?.name === "APIConnectionTimeoutError" ||
+        err?.code === "ETIMEDOUT";
+
+      if (isRateLimit || isTimeout) {
+        tripCircuitBreaker(isRateLimit ? "Groq 429 rate limit exceeded" : "Groq API timeout", 180000);
+      }
       console.warn(
-        `[AgentSentry Resilient Engine] Live Groq call encountered (${err?.message || err}). Engaging high-fidelity fallback to ensure continuous evaluation.`
+        `[AgentSentry Resilient Engine] Live Groq call encountered (${msg}). Engaging high-fidelity fallback to ensure continuous evaluation.`
       );
     }
   }
@@ -534,7 +575,7 @@ export async function callJSON<T>(
  */
 export async function classifyInjection(text: string): Promise<{ score: number; latencyMs: number }> {
   try {
-    if (isLLMConfigured()) {
+    if (isLLMConfigured() && !isCircuitBreakerOpen()) {
       const res = await callLLM({
         model: MODELS.guard,
         temperature: 0,

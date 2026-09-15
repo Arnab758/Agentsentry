@@ -69,6 +69,22 @@ export class RedTeamSwarm {
     onStep?: (event: RedTeamStepEvent) => void
   ): Promise<ExecutionTrace> {
     const trace = globalTracer.createTrace(targetName, vector.id);
+    const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    // ---- Step 0: Immediate Initial Feedback (<20ms) -----------------------
+    onStep?.({
+      stepIndex: 1,
+      stage: "RECONNAISSANCE",
+      message: `[DEPLOYING SWARM] Target locked [${targetName}] in ${target.mode.toUpperCase()} mode. Deploying ${vector.owaspCategory} probes...`,
+      vector,
+      payloadSent: "",
+      isCompromised: false,
+      threatLevel: "MEDIUM",
+      latencyMs: 12,
+      tokens: { input: 0, output: 0 }
+    });
+
+    await delay(150);
 
     // ---- Step 1: Reconnaissance (live model call) --------------------------
     const recon = await callLLM({
@@ -110,6 +126,8 @@ export class RedTeamSwarm {
       tokens: recon.usage,
       details: { category: vector.owaspCategory, severity: vector.severity, plan: recon.content }
     });
+
+    await delay(180);
 
     // ---- Step 2: Payload mutation (live model call) ------------------------
     const mutation = await callLLM({
@@ -157,6 +175,8 @@ export class RedTeamSwarm {
       details: { payload: payloadSent }
     });
 
+    await delay(180);
+
     // ---- Step 3: Execution against the real target agent -------------------
     const result = await target.execute(payloadSent);
     const execUsage: LLMUsage = result.usage ?? { input: 0, output: 0 };
@@ -200,6 +220,7 @@ export class RedTeamSwarm {
     }
 
     // ---- Step 4: Inspection -------------------------------------------------
+    await delay(120);
     const step4: RedTeamStepEvent = {
       stepIndex: 3,
       stage: "INSPECTION",
@@ -215,6 +236,7 @@ export class RedTeamSwarm {
       tokens: execUsage
     };
     onStep?.(step4);
+    await delay(80);
 
     // ---- Verdict ------------------------------------------------------------
     const verdict = compromised ? "COMPROMISED" : "IMMUNIZED_BLOCKED";

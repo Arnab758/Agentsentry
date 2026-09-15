@@ -133,6 +133,20 @@ export const App: React.FC = () => {
     const vecId = explicitVectorId || selectedVectorId;
     const eventSource = new EventSource(`/api/redteam/stream?vectorId=${vecId}`);
 
+    const safetyTimer = setTimeout(() => {
+      if (eventSource.readyState !== EventSource.CLOSED) {
+        console.warn("[EventSource] Stream safety limit reached, terminating connection.");
+        eventSource.close();
+        setIsRunningAttack(false);
+      }
+    }, 12000);
+
+    const cleanup = () => {
+      clearTimeout(safetyTimer);
+      eventSource.close();
+      setIsRunningAttack(false);
+    };
+
     eventSource.addEventListener("start", (e) => {
       const data = JSON.parse(e.data);
       setLogs(prev => [
@@ -154,7 +168,7 @@ export const App: React.FC = () => {
       setLogs(prev => [
         ...prev,
         {
-          id: `log_${Date.now()}_${step.stepIndex}`,
+          id: `log_${Date.now()}_${step.stepIndex}_${Date.now() % 1000}`,
           time: new Date().toLocaleTimeString(),
           stage: step.stage,
           message: step.message,
@@ -168,8 +182,7 @@ export const App: React.FC = () => {
 
     eventSource.addEventListener("complete", (e) => {
       const data = JSON.parse(e.data);
-      setIsRunningAttack(false);
-      eventSource.close();
+      cleanup();
 
       if (data.trace?.nodes) {
         setTraceNodes(data.trace.nodes);
@@ -235,10 +248,28 @@ export const App: React.FC = () => {
       ]);
     });
 
-    eventSource.addEventListener("error", () => {
-      setIsRunningAttack(false);
-      eventSource.close();
+    eventSource.addEventListener("error", (e: any) => {
+      try {
+        const errData = JSON.parse(e.data);
+        setLogs(prev => [
+          ...prev,
+          {
+            id: `log_${Date.now()}_err`,
+            time: new Date().toLocaleTimeString(),
+            stage: "ERROR",
+            message: `Swarm stream interrupted: ${errData.message || "Unknown error"}`,
+            isError: true
+          }
+        ]);
+      } catch {
+        // Native SSE error
+      }
+      cleanup();
     });
+
+    eventSource.onerror = () => {
+      cleanup();
+    };
   };
 
   // 5. Trigger Autonomous Immune Healer
