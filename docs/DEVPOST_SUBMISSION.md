@@ -96,6 +96,7 @@ AgentSentry is an enterprise-grade, closed-loop Autonomous Immune System, Real-T
 ---
 
 ## 📌 Form Field 6: Links to Submit
-* **GitHub Repository**: `https://github.com/[YOUR_USERNAME]/AgentSentry`
+* **GitHub Repository**: `https://github.com/Arnab758/Agentsentry`
 * **Demo Video URL**: `[YOUR_YOUTUBE_OR_LOOM_LINK]`
-* **Try it Out**: `http://localhost:3000` (or your deployed URL)
+* **Presentation Deck**: `https://github.com/Arnab758/Agentsentry/blob/main/AgentSentry_Presentation_Deck.pdf`
+* **Try it Out**: `http://localhost:3000`
