@@ -1,0 +1,12 @@
+node_modules
+*/node_modules
+.git
+.github
+.gemini
+docs
+AgentSentry_Presentation_Deck.pdf
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db

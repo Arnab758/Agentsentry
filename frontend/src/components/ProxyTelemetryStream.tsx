@@ -64,7 +64,8 @@ export const ProxyTelemetryStream: React.FC<ProxyTelemetryStreamProps> = ({ targ
   };
 
   const copyCurl = () => {
-    const snippet = `curl -X POST http://localhost:3001/v1/chat/completions \\
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3001";
+    const snippet = `curl -X POST ${origin}/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer sentry_live_sec_8492a8..." \\
   -d '{"messages": [{"role": "user", "content": "Execute maintenance routine."}]}'`;
@@ -87,7 +88,7 @@ export const ProxyTelemetryStream: React.FC<ProxyTelemetryStreamProps> = ({ targ
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
             <span className="badge badge-emerald">REAL-TIME DROP-IN PROXY</span>
             <span style={{ fontSize: "0.75rem", fontFamily: "var(--font-mono)", color: "var(--accent-cyan)" }}>
-              LISTEN: :3001/v1/chat/completions
+              LISTEN: /v1/chat/completions
             </span>
           </div>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", fontWeight: 600, color: "#ffffff", margin: 0, letterSpacing: "0.04em" }}>
@@ -187,7 +188,7 @@ export const ProxyTelemetryStream: React.FC<ProxyTelemetryStreamProps> = ({ targ
             </span>
           </div>
           <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
-            Polling :3001/api/proxy/telemetry (Every 3.5s)
+            Polling /api/proxy/telemetry (Every 3.5s)
           </span>
         </div>
 

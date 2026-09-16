@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { ATTACK_VECTORS, AttackVector } from "./redteam/vectors.js";
 import { FinancialBankingAgent } from "./targets/bankingAgent.js";
 import { EnterpriseSupportAgent } from "./targets/supportAgent.js";
@@ -164,8 +165,10 @@ app.get("/api/status", (_req: Request, res: Response) => {
 });
 
 // 1b. Health probe
-app.get("/api/health", (_req: Request, res: Response) => {
+app.get(["/health", "/api/health"], (_req: Request, res: Response) => {
   res.json({
+    status: "healthy",
+    uptime: Math.round(process.uptime()),
     ok: true,
     llmConfigured: isLLMConfigured(),
     agentModel: MODELS.agent,
@@ -631,9 +634,15 @@ app.post("/api/saas/keys", (req: Request, res: Response) => {
 });
 
 // 14. Static Production Frontend Serving (Live Host & Container Deployment)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const possibleDistPaths = [
   path.resolve(process.cwd(), "frontend/dist"),
-  path.resolve(process.cwd(), "../frontend/dist")
+  path.resolve(process.cwd(), "../frontend/dist"),
+  path.resolve(__dirname, "../../frontend/dist"),
+  path.resolve(__dirname, "../frontend/dist"),
+  path.resolve(__dirname, "./frontend/dist")
 ];
 const distPath = possibleDistPaths.find((p) => fs.existsSync(p));
 if (distPath) {

@@ -10,11 +10,15 @@ export const ProxyIntegrationModal: React.FC<ProxyIntegrationModalProps> = ({ is
 
   if (!isOpen) return null;
 
+  const origin = typeof window !== "undefined" && window.location.origin && !window.location.origin.includes(":3000")
+    ? window.location.origin
+    : "http://localhost:3001";
+
   const pythonSnippet = `import openai
 
 # 1. Point standard OpenAI client to your AgentSentry Zero-Trust Proxy
 client = openai.OpenAI(
-    base_url="http://localhost:3001/v1",  # AgentSentry proxy URL
+    base_url="${origin}/v1",  # AgentSentry proxy URL
     api_key="agentsentry_prod_key"
 )
 
@@ -36,7 +40,7 @@ print(response.choices[0].message.content)`;
 
 // 1. Drop-in 1-line configuration for existing AI codebases
 const client = new OpenAI({
-  baseURL: "http://localhost:3001/v1", // AgentSentry Zero-Trust Proxy
+  baseURL: "${origin}/v1", // AgentSentry Zero-Trust Proxy
   apiKey: "agentsentry_prod_key"
 });
 
@@ -48,7 +52,7 @@ const response = await client.chat.completions.create({
 
 console.log(response.choices[0].message.content);`;
 
-  const curlSnippet = `curl -X POST http://localhost:3001/v1/chat/completions \\
+  const curlSnippet = `curl -X POST ${origin}/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer agentsentry_prod_key" \\
   -d '{
