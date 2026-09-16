@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { apiUrl } from "../lib/api.js";
 
 interface LivePlaygroundProps {
   activeTargetKey: "banking" | "support" | "custom";
@@ -61,7 +60,7 @@ export const LivePlayground: React.FC<LivePlaygroundProps> = ({
     setResponseResult(null);
 
     try {
-      const res = await fetch(apiUrl("/api/agent/interact"), {
+      const res = await fetch("/api/agent/interact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: prompt.trim() })

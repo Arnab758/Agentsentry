@@ -17,7 +17,7 @@ import { isLLMConfigured, MODELS, callLLM, LLMMessage, getCircuitBreakerStatus }
 import { screenInput, authorizeToolCall } from "./security/policy.js";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -655,14 +655,30 @@ if (distPath) {
   });
 }
 
-if (process.env.NETLIFY !== "true" && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
-  app.listen(Number(PORT), "0.0.0.0", () => {
-    console.log(`[AgentSentry] Live engine on http://localhost:${PORT}`);
-    console.log(`[AgentSentry] LLM configured: ${isLLMConfigured()} | model: ${MODELS.agent}`);
-    if (distPath) {
-      console.log(`[AgentSentry] Live web UI served from: ${distPath}`);
-    }
-  });
-}
+const server = app.listen(Number(PORT), "0.0.0.0", () => {
+  console.log(`[AgentSentry] Live engine on http://localhost:${PORT}`);
+  console.log(`[AgentSentry] LLM configured: ${isLLMConfigured()} | model: ${MODELS.agent}`);
+  if (distPath) {
+    console.log(`[AgentSentry] Live web UI served from: ${distPath}`);
+  }
+});
 
-export { app };
+server.on("error", (err: any) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`[AgentSentry] Port ${PORT} is already in use.`);
+    process.exit(1);
+  } else {
+    console.error(`[AgentSentry] Server error:`, err);
+  }
+});
+
+const handleShutdown = () => {
+  server.close(() => {
+    process.exit(0);
+  });
+};
+
+process.on("SIGTERM", handleShutdown);
+process.on("SIGINT", handleShutdown);
+
+export { app, server };

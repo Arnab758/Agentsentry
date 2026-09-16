@@ -1,0 +1,6 @@
+{
+  "name": "AgentSentry",
+  "description": "Autonomous AI Agent Immune & Observability Fabric. Engineered with Zero-Trust Security, Real-Time DAG Tracing, and Closed-Loop Self-Healing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

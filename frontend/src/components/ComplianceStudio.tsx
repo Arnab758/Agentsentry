@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { apiUrl } from "../lib/api.js";
 
 export interface ComplianceData {
   organization: string;
@@ -30,18 +29,18 @@ export const ComplianceStudio: React.FC<ComplianceStudioProps> = ({ targetMode }
   const [data, setData] = useState<ComplianceData | null>(null);
 
   useEffect(() => {
-    fetch(apiUrl("/api/compliance/scorecard"))
+    fetch("/api/compliance/scorecard")
       .then((res) => res.json())
       .then((d) => setData(d))
       .catch(() => setData(null));
   }, [targetMode]);
 
   const handleDownloadReport = () => {
-    window.location.href = apiUrl("/api/compliance/download-report");
+    window.location.href = "/api/compliance/download-report";
   };
 
   const handleDownloadCI = () => {
-    window.location.href = apiUrl("/api/compliance/github-action");
+    window.location.href = "/api/compliance/github-action";
   };
 
   const tested = data?.totalVulnerabilitiesTested ?? 0;
