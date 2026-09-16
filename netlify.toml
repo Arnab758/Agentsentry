@@ -1,0 +1,15 @@
+# Netlify Configuration for AgentSentry
+[build]
+  command = "npm run build"
+  publish = "frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NODE_ENV = "development"
+  NPM_FLAGS = "--include=dev"
+
+# Single Page Application routing (prevent 404 on refresh)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
