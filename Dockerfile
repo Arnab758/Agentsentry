@@ -4,21 +4,20 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copy manifests
+# Copy root and workspace manifests
 COPY package.json ./
 COPY backend/package*.json ./backend/
 COPY frontend/package*.json ./frontend/
 
-# Install dependencies for compilation
-RUN npm install --prefix backend && npm install --prefix frontend
+# Install dependencies using npm workspaces
+RUN npm install
 
-# Copy application source
+# Copy application source code
 COPY backend ./backend
 COPY frontend ./frontend
 
 # Compile backend TypeScript & build frontend Vite bundle
-RUN npm run build --prefix backend
-RUN npm run build --prefix frontend
+RUN npm run build
 
 # Stage 2: Production Container
 FROM node:20-slim AS runner
