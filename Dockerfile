@@ -5,16 +5,17 @@ FROM node:20-slim AS builder
 WORKDIR /app
 
 # Copy root and workspace manifests
-COPY package.json ./
+COPY package*.json ./
 COPY backend/package*.json ./backend/
 COPY frontend/package*.json ./frontend/
 
 # Install dependencies using npm workspaces
 RUN npm install
 
-# Copy application source code
+# Copy application source code and build scripts
 COPY backend ./backend
 COPY frontend ./frontend
+COPY scripts ./scripts
 
 # Compile backend TypeScript & build frontend Vite bundle
 RUN npm run build
@@ -28,7 +29,7 @@ ENV NODE_ENV=production
 ENV PORT=8080
 
 # Copy root manifest and backend manifests
-COPY package.json ./
+COPY package*.json ./
 COPY backend/package*.json ./backend/
 
 # Install production dependencies only for backend
