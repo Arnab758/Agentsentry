@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: agentsentry
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: node backend/dist/server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: PORT
+        value: 10000
