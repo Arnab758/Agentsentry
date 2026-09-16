@@ -1,5 +1,9 @@
 # 🛡️ AgentSentry: Autonomous AI Agent Immune & Observability Fabric
 
+<p align="center">
+  <img src="./docs/agentsentry_hero_banner.jpg" alt="AgentSentry Hero Banner" width="100%" />
+</p>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React 18](https://img.shields.io/badge/React-18.3-61dafb?logo=react)](https://reactjs.org/)
