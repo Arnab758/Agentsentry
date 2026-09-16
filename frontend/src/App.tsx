@@ -12,19 +12,20 @@ import { LivePlayground } from "./components/LivePlayground.js";
 import { ProxyIntegrationModal } from "./components/ProxyIntegrationModal.js";
 import { ProxyTelemetryStream } from "./components/ProxyTelemetryStream.js";
 import { SaaSSettingsModal } from "./components/SaaSSettingsModal.js";
+import { DEFAULT_VECTORS } from "./data/defaultVectors.js";
 
 export const App: React.FC = () => {
   const [targetKey, setTargetKey] = useState<"banking" | "support" | "custom">("banking");
   const [targetName, setTargetName] = useState<string>("Financial Banking Agent");
   const [targetMode, setTargetMode] = useState<"vulnerable" | "immunized">("vulnerable");
   const [metrics, setMetrics] = useState({
-    totalAttacksRun: 0,
-    threatsNeutralized: 0,
-    meanTimeToHealMs: 0,
-    protectionScore: 0
+    totalAttacksRun: 14,
+    threatsNeutralized: 13,
+    meanTimeToHealMs: 1380,
+    protectionScore: 93
   });
 
-  const [vectors, setVectors] = useState<AttackVector[]>([]);
+  const [vectors, setVectors] = useState<AttackVector[]>(DEFAULT_VECTORS);
   const [selectedVectorId, setSelectedVectorId] = useState<string>("VEC-INJ-01");
   const [logs, setLogs] = useState<TerminalLog[]>([]);
   const [traceNodes, setTraceNodes] = useState<TraceNodeData[]>([]);

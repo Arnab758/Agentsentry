@@ -11,7 +11,7 @@
     "lint": "npm run build:backend && npm run build:frontend",
     "build:frontend": "npm run build --workspace=frontend",
     "build:backend": "npm run build --workspace=backend",
-    "build": "npm run build:frontend && npm run build:backend",
+    "build": "npm run build:frontend && npm run build:backend && node scripts/copy-dist.mjs",
     "start": "node backend/dist/server.js",
     "test": "npm test --workspace=backend"
   },
