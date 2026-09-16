@@ -12,6 +12,7 @@ import { LivePlayground } from "./components/LivePlayground.js";
 import { ProxyIntegrationModal } from "./components/ProxyIntegrationModal.js";
 import { ProxyTelemetryStream } from "./components/ProxyTelemetryStream.js";
 import { SaaSSettingsModal } from "./components/SaaSSettingsModal.js";
+import { apiUrl } from "./lib/api.js";
 
 export const App: React.FC = () => {
   const [targetKey, setTargetKey] = useState<"banking" | "support" | "custom">("banking");
@@ -42,7 +43,7 @@ export const App: React.FC = () => {
 
   // 1. Initial Data Fetch
   useEffect(() => {
-    fetch("/api/status")
+    fetch(apiUrl("/api/status"))
       .then(res => res.json())
       .then(data => {
         setTargetKey(data.activeTarget.key);
@@ -53,7 +54,7 @@ export const App: React.FC = () => {
       })
       .catch(console.error);
 
-    fetch("/api/vectors")
+    fetch(apiUrl("/api/vectors"))
       .then(res => res.json())
       .then(data => {
         setVectors(data.vectors);
@@ -64,7 +65,7 @@ export const App: React.FC = () => {
       .catch(console.error);
 
     // Initial load of active agent's regression sandbox patch
-    fetch("/api/patch")
+    fetch(apiUrl("/api/patch"))
       .then(res => res.json())
       .then(data => {
         if (data.success && data.patch) {
@@ -76,7 +77,7 @@ export const App: React.FC = () => {
 
   // Re-pull the server-computed telemetry (all values derive from real traces).
   const refreshStatus = React.useCallback(() => {
-    fetch("/api/status")
+    fetch(apiUrl("/api/status"))
       .then(res => res.json())
       .then(data => {
         setTargetMode(data.activeTarget.mode);
@@ -88,7 +89,7 @@ export const App: React.FC = () => {
   // 2. Target Agent Switcher
   const handleSelectTarget = async (key: "banking" | "support" | "custom") => {
     try {
-      const res = await fetch("/api/target/select", {
+      const res = await fetch(apiUrl("/api/target/select"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetKey: key })
@@ -112,7 +113,7 @@ export const App: React.FC = () => {
         if (data.patch) {
           setPatch(data.patch);
         } else {
-          fetch("/api/patch")
+          fetch(apiUrl("/api/patch"))
             .then(r => r.json())
             .then(pData => {
               if (pData.success && pData.patch) setPatch(pData.patch);
@@ -128,7 +129,7 @@ export const App: React.FC = () => {
   // 3. Shield Mode Toggle
   const handleToggleMode = async (mode: "vulnerable" | "immunized") => {
     try {
-      const res = await fetch("/api/target/mode", {
+      const res = await fetch(apiUrl("/api/target/mode"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode })
@@ -152,7 +153,7 @@ export const App: React.FC = () => {
     setBusinessImpact(null);
 
     const vecId = explicitVectorId || selectedVectorId;
-    const eventSource = new EventSource(`/api/redteam/stream?vectorId=${vecId}`);
+    const eventSource = new EventSource(apiUrl(`/api/redteam/stream?vectorId=${vecId}`));
 
     const safetyTimer = setTimeout(() => {
       if (eventSource.readyState !== EventSource.CLOSED) {
@@ -309,7 +310,7 @@ export const App: React.FC = () => {
     ]);
 
     try {
-      const res = await fetch("/api/heal", {
+      const res = await fetch(apiUrl("/api/heal"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vectorId: selectedVectorId })
@@ -488,7 +489,7 @@ export const App: React.FC = () => {
                 ]);
               }
               if (traceId) {
-                fetch("/api/traces")
+                fetch(apiUrl("/api/traces"))
                   .then(r => r.json())
                   .then(d => {
                     const found = d.traces?.find((t: any) => t.traceId === traceId);

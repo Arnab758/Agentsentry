@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { apiUrl } from "../lib/api.js";
 
 export interface ApiKeyRecord {
   id: string;
@@ -30,7 +31,7 @@ export const SaaSSettingsModal: React.FC<SaaSSettingsModalProps> = ({ isOpen, on
 
   useEffect(() => {
     if (!isOpen) return;
-    fetch("/api/saas/keys")
+    fetch(apiUrl("/api/saas/keys"))
       .then(res => res.json())
       .then(data => {
         if (data.keys) setKeys(data.keys);
@@ -43,7 +44,7 @@ export const SaaSSettingsModal: React.FC<SaaSSettingsModalProps> = ({ isOpen, on
     e.preventDefault();
     setIsGenerating(true);
     try {
-      const res = await fetch("/api/saas/keys", {
+      const res = await fetch(apiUrl("/api/saas/keys"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newKeyName || "Agent Cluster Key", environment: newKeyEnv })

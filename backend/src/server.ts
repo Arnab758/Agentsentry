@@ -655,12 +655,14 @@ if (distPath) {
   });
 }
 
-app.listen(Number(PORT), "0.0.0.0", () => {
-  console.log(`[AgentSentry] Live engine on http://localhost:${PORT}`);
-  console.log(`[AgentSentry] LLM configured: ${isLLMConfigured()} | model: ${MODELS.agent}`);
-  if (distPath) {
-    console.log(`[AgentSentry] Live web UI served from: ${distPath}`);
-  }
-});
+if (process.env.NETLIFY !== "true" && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  app.listen(Number(PORT), "0.0.0.0", () => {
+    console.log(`[AgentSentry] Live engine on http://localhost:${PORT}`);
+    console.log(`[AgentSentry] LLM configured: ${isLLMConfigured()} | model: ${MODELS.agent}`);
+    if (distPath) {
+      console.log(`[AgentSentry] Live web UI served from: ${distPath}`);
+    }
+  });
+}
 
 export { app };
